@@ -22,7 +22,7 @@ library(tidyr)
 
 # Load dataset ------------------------------------------------------------
 getwd()
-Global_Mobility_Report<-read.csv("parksinthepandemic/code/inputdata/Global_Mobility_Report_030620.csv")
+Global_Mobility_Report<-read.csv("inputdata/Global_Mobility_Report_030620.csv")
 Global_Mobility_Report$date<-as.Date(Global_Mobility_Report$date,format = "%d/%m/%y")
 Global_Mobility_Report$parks_percent_change_from_baseline<-as.numeric(Global_Mobility_Report$parks_percent_change_from_baseline)
 
@@ -31,28 +31,9 @@ UK<-subset(Global_Mobility_Report,country_region_code == "GB")
 #UK<-UK[!(UK$sub_country%in%""), ]
 
 # Assigning country to UK districts ---------------------------------------
-#Reading the old data
-Global_Mobility_Report_O<-read.csv('Global_Mobility_Report.csv')
-Global_Mobility_Report_O$date<-as.Date(Global_Mobility_Report_O$date,format = "%d/%m/%y")
-UK_O<-subset(Global_Mobility_Report_O,country_region_code == "GB")
-UK_O<-subset(UK_O,select=c(sub_region_1,sub_country))
-UK_O<-UK_O[!(UK_O$sub_country%in%""), ]
-#Remove duplicates to only extract the sub_region to its country.
-UK_O<-UK_O[!duplicated(UK_O),]
-#Determine the districts for each country into a vector and add additional new ones they have added.
-#England
-England_Districts<-subset(UK_O,sub_country == "England",select=c(sub_region_1))[,1]
-#Wales
-Wales_Districts<-subset(UK_O,sub_country == "Wales",select=c(sub_region_1))[,1]
-#Scotland
-Scotland_Districts<-subset(UK_O,sub_country == "Scotland", select=c(sub_region_1))[,1]
-#N Ireland
-N_Ireland_Districts<-subset(UK_O,sub_country == "N Ireland", select=c(sub_region_1))[,1]
-#List
-Districts_by_country<-list(England_Districts,Wales_Districts,Scotland_Districts,N_Ireland_Districts)
 #saveRDS(Districts_by_country,"Districts_by_country.RDS")
-Districts_by_country<-readRDS("Districts_by_country.RDS")
-UK$sub_country<-NA
+Districts_by_country<-readRDS("inputdata/Districts_by_country.RDS")
+
 # Code to assign districts to the new data set ----------------------------
 #England
 England_col<-UK[(UK$sub_region_1%in%Districts_by_country[[1]]),]
