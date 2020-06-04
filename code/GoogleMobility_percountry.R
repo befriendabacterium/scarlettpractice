@@ -21,10 +21,38 @@ library(lattice)
 library(tidyr)
 
 # Load dataset ------------------------------------------------------------
+# Start -------------------------------------------------------------------
+rm(list=ls())
+set.seed(1234)
+
+# Load packages ----------------------------------------------------------
+#install.packages('plotrix')
+library(plotrix)
+#install.packages('tibble')
+library(tibble)
+#install.packages('ggplot2')
+library(ggplot2)
+#install.packages('gridExtra')
+library(gridExtra)
+#install.packages('grid)
+library(grid)
+#install.packages('ggplot2)
+library(ggplot2)
+#install.packages('lattice')
+library(lattice)
+#install.packages("tidyr")
+library(tidyr)
+
+# Load dataset ------------------------------------------------------------
 getwd()
 Global_Mobility_Report<-read.csv("parksinthepandemic/code/inputdata/Global_Mobility_Report_030620.csv")
 Global_Mobility_Report$date<-as.Date(Global_Mobility_Report$date,format = "%d/%m/%y")
 Global_Mobility_Report$parks_percent_change_from_baseline<-as.numeric(Global_Mobility_Report$parks_percent_change_from_baseline)
+
+Global_Mobility_Report_3<-read.csv('/inputdata/Global_Mobility_Report_030620.csv')
+Global_Mobility_Report_3$date<-as.Date(Global_Mobility_Report_3$date,format = "%d/%m/%y")
+Global_Mobility_Report_3$parks_percent_change_from_baseline<-as.numeric(Global_Mobility_Report_3$parks_percent_change_from_baseline)
+
 # Subset the data to only present the UK data, separated by GB cod --------
 UK<-subset(Global_Mobility_Report,country_region_code == "GB")
 #UK<-UK[!(UK$sub_country%in%""), ]
@@ -93,20 +121,20 @@ UK_SE_df$Date<-as.Date(UK_SE_df$Date)
 #England
 ENG_graph<-
   ggplot(data=UK_mean_df,aes(x=Date,y=England))+
-         geom_line()+
+  geom_line()+
   geom_ribbon(aes(ymin=England-UK_SE_df$England,
-                    ymax=England+UK_SE_df$England),alpha=0.4)+
+                  ymax=England+UK_SE_df$England),alpha=0.4)+
   coord_cartesian(ylim=c(-60,160))+
   geom_hline(yintercept=0)+ 
   theme(panel.background = element_rect(fill = "white", colour = "black",
-                                  size = 1, linetype = "solid"),
-  panel.grid.major = element_line(size = 0.5, linetype = 'solid',
-                                  colour = "grey"), 
-  panel.grid.minor = element_line(size = 0.25, linetype = 'solid',
-                                  colour = "grey"))+
+                                        size = 1, linetype = "solid"),
+        panel.grid.major = element_line(size = 0.5, linetype = 'solid',
+                                        colour = "grey"), 
+        panel.grid.minor = element_line(size = 0.25, linetype = 'solid',
+                                        colour = "grey"))+
   ggtitle("England")+xlab("Date")+ylab("Parks percentage change from baseline")
 
-  
+
 #Wales
 WAL_graph<-
   ggplot(data=UK_mean_df,aes(x=Date,y=Wales))+
