@@ -49,7 +49,7 @@ Global_Mobility_Report<-read.csv("parksinthepandemic/code/inputdata/Global_Mobil
 Global_Mobility_Report$date<-as.Date(Global_Mobility_Report$date,format = "%d/%m/%y")
 Global_Mobility_Report$parks_percent_change_from_baseline<-as.numeric(Global_Mobility_Report$parks_percent_change_from_baseline)
 
-Global_Mobility_Report_3<-read.csv('/inputdata/Global_Mobility_Report_030620.csv')
+Global_Mobility_Report_3<-read.csv('parksinthepandemic/code/inputdata/Global_Mobility_Report_030620.csv')
 Global_Mobility_Report_3$date<-as.Date(Global_Mobility_Report_3$date,format = "%d/%m/%y")
 Global_Mobility_Report_3$parks_percent_change_from_baseline<-as.numeric(Global_Mobility_Report_3$parks_percent_change_from_baseline)
 
