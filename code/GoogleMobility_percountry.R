@@ -17,15 +17,57 @@ library(grid)
 library(ggplot2)
 #install.packages('lattice')
 library(lattice)
+#install.packages("tidyr")
+library(tidyr)
 
 # Load dataset ------------------------------------------------------------
-
-Global_Mobility_Report_3<-read.csv('inputdata/Global_Mobility_Report_030620.csv')
-Global_Mobility_Report_3$date<-as.Date(Global_Mobility_Report_3$date,format = "%d/%m/%y")
-Global_Mobility_Report_3$parks_percent_change_from_baseline<-as.numeric(Global_Mobility_Report_3$parks_percent_change_from_baseline)
+getwd()
+Global_Mobility_Report<-read.csv("parksinthepandemic/code/inputdata/Global_Mobility_Report_030620.csv")
+Global_Mobility_Report$date<-as.Date(Global_Mobility_Report$date,format = "%d/%m/%y")
+Global_Mobility_Report$parks_percent_change_from_baseline<-as.numeric(Global_Mobility_Report$parks_percent_change_from_baseline)
 # Subset the data to only present the UK data, separated by GB cod --------
-UK<-subset(Global_Mobility_Report_3,country_region_code == "GB")
-UK<-UK[!(UK$sub_country%in%""), ]
+UK<-subset(Global_Mobility_Report,country_region_code == "GB")
+#UK<-UK[!(UK$sub_country%in%""), ]
+
+# Assigning country to UK districts ---------------------------------------
+#Reading the old data
+Global_Mobility_Report_O<-read.csv('Global_Mobility_Report.csv')
+Global_Mobility_Report_O$date<-as.Date(Global_Mobility_Report_O$date,format = "%d/%m/%y")
+UK_O<-subset(Global_Mobility_Report_O,country_region_code == "GB")
+UK_O<-subset(UK_O,select=c(sub_region_1,sub_country))
+UK_O<-UK_O[!(UK_O$sub_country%in%""), ]
+#Remove duplicates to only extract the sub_region to its country.
+UK_O<-UK_O[!duplicated(UK_O),]
+#Determine the districts for each country into a vector and add additional new ones they have added.
+#England
+England_Districts<-subset(UK_O,sub_country == "England",select=c(sub_region_1))[,1]
+#Wales
+Wales_Districts<-subset(UK_O,sub_country == "Wales",select=c(sub_region_1))[,1]
+#Scotland
+Scotland_Districts<-subset(UK_O,sub_country == "Scotland", select=c(sub_region_1))[,1]
+#N Ireland
+N_Ireland_Districts<-subset(UK_O,sub_country == "N Ireland", select=c(sub_region_1))[,1]
+#List
+Districts_by_country<-list(England_Districts,Wales_Districts,Scotland_Districts,N_Ireland_Districts)
+#saveRDS(Districts_by_country,"Districts_by_country.RDS")
+Districts_by_country<-readRDS("Districts_by_country.RDS")
+UK$sub_country<-NA
+# Code to assign districts to the new data set ----------------------------
+#England
+England_col<-UK[(UK$sub_region_1%in%Districts_by_country[[1]]),]
+#plyr::count(UK$sub_region_1%in%Districts_by_country[[1]])
+England_col$sub_country<-England_col$sub_country%>%replace_na("England")
+#Wales
+Wales_col<-UK[(UK$sub_region_1%in%Districts_by_country[[2]]),]
+Wales_col$sub_country<-Wales_col$sub_country%>%replace_na("Wales")
+#Scotland
+Scotland_col<-UK[(UK$sub_region_1%in%Districts_by_country[[3]]),]
+Scotland_col$sub_country<-Scotland_col$sub_country%>%replace_na("Scotland")
+#Northern Ireland
+N_Ireland_col<-UK[(UK$sub_region_1%in%Districts_by_country[[4]]),]
+N_Ireland_col$sub_country<-N_Ireland_col$sub_country%>%replace_na("N Ireland")
+#Connect them all together
+UK<-rbind(England_col,Wales_col,Scotland_col,N_Ireland_col)
 
 # Subset the data to only present park data -------------------------------
 Park_UK <-subset(UK,select=c(sub_region_1,sub_country,date,parks_percent_change_from_baseline))
@@ -39,12 +81,12 @@ Park_UK_SE<-tapply(Park_UK$parks_percent_change_from_baseline, list(Park_UK$sub_
 #Mean Values
 UK_mean_df<-as.data.frame(t(Park_UK_mean))
 UK_mean_df<- rownames_to_column(UK_mean_df,var="Date")
-names(UK_mean_df)<-c("Date","UK","England","N_Ireland","Scotland","Wales")
+names(UK_mean_df)<-c("Date","England","N_Ireland","Scotland","Wales")
 UK_mean_df$Date<-as.Date(UK_mean_df$Date)
 #SE values
 UK_SE_df<-as.data.frame(t(Park_UK_SE))
 UK_SE_df<-rownames_to_column(UK_SE_df,var="Date")
-names(UK_SE_df)<-c("Date","UK","England","N_Ireland","Scotland","Wales")
+names(UK_SE_df)<-c("Date","England","N_Ireland","Scotland","Wales")
 UK_SE_df$Date<-as.Date(UK_SE_df$Date)
 
 # Plots -------------------------------------------------------------------
@@ -111,7 +153,6 @@ NI_graph<-
                                         colour = "grey"), 
         panel.grid.minor = element_line(size = 0.25, linetype = 'solid',
                                         colour = "grey"))+
-  ggtitle("N_Ireland")+xlab("Date")+ylab("Parks percentage change from baseline")
+  ggtitle("N Ireland")+xlab("Date")+ylab("Parks percentage change from baseline")
 
 grid.arrange(ENG_graph,WAL_graph,SCOT_graph,NI_graph, nrow = 2)
-
