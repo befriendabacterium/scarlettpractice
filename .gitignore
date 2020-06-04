@@ -47,3 +47,7 @@ vignettes/*.pdf
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+#Github files
+#####################
+.gitignore
