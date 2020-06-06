@@ -21,10 +21,13 @@ library(lattice)
 library(tidyr)
 
 # Load dataset ------------------------------------------------------------
-getwd()
-Global_Mobility_Report<-read.csv("inputdata/Global_Mobility_Report_030620.csv")
-Global_Mobility_Report$date<-as.Date(Global_Mobility_Report$date,format = "%d/%m/%y")
+
+Global_Mobility_Report<-read.csv("inputdata/Global_Mobility_Report.csv")
+Global_Mobility_Report$date<-as.Date(Global_Mobility_Report$date)
 Global_Mobility_Report$parks_percent_change_from_baseline<-as.numeric(Global_Mobility_Report$parks_percent_change_from_baseline)
+
+#add sub_country column
+Global_Mobility_Report<-Global_Mobility_Report %>% add_column(sub_country = NA, .after = which(colnames(Global_Mobility_Report)=="country_region"))
 
 # Subset the data to only present the UK data, separated by GB cod --------
 UK<-subset(Global_Mobility_Report,country_region_code == "GB")
@@ -138,3 +141,4 @@ NI_graph<-
   ggtitle("N Ireland")+xlab("Date")+ylab("Parks percentage change from baseline")
 
 grid.arrange(ENG_graph,WAL_graph,SCOT_graph,NI_graph, nrow = 2)
+
