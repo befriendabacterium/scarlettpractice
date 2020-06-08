@@ -21,9 +21,13 @@ library(lattice)
 library(tidyr)
 
 # Load dataset ------------------------------------------------------------
+<<<<<<< HEAD
 #getwd()
 #Global_Mobility_Report<-read.csv("inputdata/Global_Mobility_Report_030620.csv")
 #Global_Mobility_Report$date<-as.Date(Global_Mobility_Report$date,format = "%d/%m/%y")
+=======
+
+>>>>>>> 1e2a479b805cb289a4a7266b069fc1d6871e7de0
 Global_Mobility_Report<-read.csv("inputdata/Global_Mobility_Report.csv")
 Global_Mobility_Report$date<-as.Date(Global_Mobility_Report$date)
 Global_Mobility_Report$parks_percent_change_from_baseline<-as.numeric(Global_Mobility_Report$parks_percent_change_from_baseline)
@@ -36,7 +40,10 @@ UK<-subset(Global_Mobility_Report,country_region_code == "GB")
 #UK<-UK[!(UK$sub_country%in%""), ]
 
 # Assigning country to UK districts ---------------------------------------
+<<<<<<< HEAD
 #saveRDS(Districts_by_country,"Districts_by_country.RDS")
+=======
+>>>>>>> 1e2a479b805cb289a4a7266b069fc1d6871e7de0
 
 Districts_by_country<-readRDS("inputdata/Districts_by_country.RDS")
 
