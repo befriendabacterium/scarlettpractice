@@ -27,7 +27,7 @@ Google_Mobility_data<-read.csv(csv.url, header = TRUE)
 read_text<-read_html(base.url2)
 text<-html_text(read_text)
 #Extracting the data via inbetween strings
-read_date<-str_match(text, "Reports created\\s*(.*?)\\s*.By")[2]
+read_date<-str_match(text, "Reports created\\s*(.*?)\\s*\\.")[2]
 #Creating the name of the file using the string function
 Report=paste("Global_Mobility_Report_",read_date,sep="")
 #Saving the Back up data set
