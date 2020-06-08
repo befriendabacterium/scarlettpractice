@@ -27,15 +27,11 @@ Google_Mobility_data<-read.csv(csv.url, header = TRUE)
 read_text<-read_html(base.url2)
 text<-html_text(read_text)
 #Extracting the data via inbetween strings
-read_date<-str_match(text, "Reports created\\s*(.*?)\\s*.By")
-#Assigning a value to the date
-read_date_1<-read_date[2]
+read_date<-str_match(text, "Reports created\\s*(.*?)\\s*.By")[2]
 #Creating the name of the file using the string function
-Report=paste("Global_Mobility_Report_",read_date_1,sep="")
+Report=paste("Global_Mobility_Report_",read_date,sep="")
 #Saving the Back up data set
-setwd("~/GitHub/parksinthepandemic/code/inputdata/Back up data")
-save(Google_Mobility_data,file = paste(Report,".csv",sep=""))
+save(Google_Mobility_data,file = paste("inputdata/reports_backup/",Report,".csv",sep=""))
 #Saving the Current data set
-setwd("~/GitHub/parksinthepandemic/code/inputdata")
-save(Google_Mobility_data,file = "Current_Global_Mobility_Report.csv")
+save(Google_Mobility_data,file = "Global_Mobility_Report.csv")
 #Resetting the work directory to work for future code
