@@ -31,7 +31,7 @@ read_date<-str_match(text, "Reports created\\s*(.*?)\\s*\\.")[2]
 #Creating the name of the file using the string function
 Report=paste("Global_Mobility_Report_",read_date,sep="")
 #Saving the Back up data set
-save(Google_Mobility_data,file = paste("inputdata/reports_backup/",Report,".csv",sep=""))
+write.csv(Google_Mobility_data,file = paste("inputdata/reports_backup/",Report,".csv",sep=""))
 #Saving the Current data set
-save(Google_Mobility_data,file = "Global_Mobility_Report.csv")
+write.csv(Google_Mobility_data,file = "inputdata/Global_Mobility_Report.csv")
 #Resetting the work directory to work for future code
