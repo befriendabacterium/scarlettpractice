@@ -34,4 +34,4 @@ Report=paste("Global_Mobility_Report_",read_date,sep="")
 write.csv(Google_Mobility_data,file = paste("inputdata/reports_backup/",Report,".csv",sep=""))
 #Saving the Current data set
 write.csv(Google_Mobility_data,file = "inputdata/Global_Mobility_Report.csv")
-#Resetting the work directory to work for future code
+
