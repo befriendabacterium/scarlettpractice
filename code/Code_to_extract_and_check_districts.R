@@ -38,7 +38,6 @@ Wiki_links<-list("https://en.wikipedia.org/wiki/Local_government_in_Northern_Ire
 )
 
 
-
 # Checking the districts match up in N_Ireland -----------------------------------------
 #Creating a data frame based of the second table on the wikipedia page
 NI.df<-as.data.frame(readHTMLTable(doc = content((GET(Wiki_links[[1]])),"text"))[2])
