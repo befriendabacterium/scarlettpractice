@@ -55,9 +55,9 @@ W.df<-data.frame(readHTMLTable(doc=content((GET(Wiki_links[[2]])),"text"))[2])
 W_districts<-strsplit(as.character(W.df[1,2]),'\n') %>% 
   unlist(recursive = T) 
 #Remove special charactersand bracketed information
-W_districts<-str_trim(gsub("\\(.*?)|\\???","",W_districts))
+W_districts<-str_trim(gsub("\\(.*?)|\\???|\\*","",W_districts))
 #Checks for match
-match(W_district,Districts_by_country[[2]])
+match(W_districts,Districts_by_country[[2]])
 
 # Checking the districts match up in Scotland -----------------------------
 #Extract the table from the wikipedia page corresponding to the Scottish districts.(Table 3)
@@ -123,3 +123,4 @@ Wiki.df$wiki_type[(Wiki.df$wiki_district%in%E2_districts)]<-"non_metropoliton_co
 #E3 link
 Wiki.df$wiki_link[(Wiki.df$wiki_district%in%E3_districts)]<-Wiki_links[[6]]
 Wiki.df$wiki_type[(Wiki.df$wiki_district%in%E3_districts)]<-"metropoliton_counties"
+
