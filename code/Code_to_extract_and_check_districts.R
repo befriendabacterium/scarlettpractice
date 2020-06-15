@@ -16,12 +16,14 @@ library(httr)
 library(readr)
 #install.packages("stringr")
 library(stringr)
-#install.packages("magrittr")
-#library(magrittr)
 #install.packages("data.table")
 library(data.table)
 #install.packages
 library(dplyr)
+#install.packages('tibble')
+library(tibble)
+#install.packages("tidyr")
+library(tidyr)
 
 # Code to download list file of districts ---------------------------------
 Districts_by_country<-readRDS("Districts_by_country.RDS")
@@ -50,10 +52,10 @@ match(NI_districts,Districts_by_country[[4]])
 #Extract and create the data frame from data on the wikipedia page corresponding to the second table.
 W.df<-data.frame(readHTMLTable(doc=content((GET(Wiki_links[[2]])),"text"))[2])
 #Extract the countries associated to the Wales districts then extract one box and obtain a string seperated out by n/ and then un list.
-W_district<-strsplit(as.character(W.df[1,2]),'\n') %>% 
+W_districts<-strsplit(as.character(W.df[1,2]),'\n') %>% 
   unlist(recursive = T) 
 #Remove special charactersand bracketed information
-W_district<-str_trim(gsub("\\(.*?)|\\???","",W_district))
+W_districts<-str_trim(gsub("\\(.*?)|\\???","",W_districts))
 #Checks for match
 match(W_district,Districts_by_country[[2]])
 
@@ -72,18 +74,52 @@ match(S_districts, Districts_by_country[[3]])
 E1.df<-data.frame(readHTMLTable(doc = content((GET(Wiki_links[[4]])),"text"))[3])
 #Changing the column names to first row of names
 colnames(E1.df)=E1.df[1,]
+#Just the E1 characters
+E1_districts<-gsub("\\[.*?]","",E1.df[-1,1])
 
 #Creating a data frame for the non-metropolitan_districts from the wikipedia page.
 E2.df<-data.frame(readHTMLTable(doc = content((GET(Wiki_links[[5]])),"text"))[3])
 #Changing the first row into the column names
 colnames(E2.df)=E2.df[1,]
+#Just E2 districts
+E2_districts<-E2.df[-1,1]
 
 #Creating a metropolitan boroughs data frame from the wikipedia page.
 E3.df<-data.frame(readHTMLTable(doc = content((GET(Wiki_links[[6]])),"text"))[2])
 #Changing the first row into the column names. 
 colnames(E3.df)=E3.df[1,]
+#Just E3 districts
+E3_districts<-E3.df[-1,1]
 
 #Combining All of the districts into one vector while removing full stops from parts of E1 vector. 
-E_districts<-c(E2.df[-1,1],E3.df[-1,1],(gsub("\\[.*?]","",E1.df[-1,1])),"Greater London")
+E_districts<-c(E1_districts,E2_districts,E3_districts,"Greater London")
 #Matching them
 match(E_districts,Districts_by_country[[1]])
+
+
+# Making a data frame for all of the above --------------------------------
+Wiki.df<-as.data.frame(c(E_districts,NI_districts,S_districts,W_districts))
+#Changing the initial column name and adding new columns
+colnames(Wiki.df)<-c("wiki_district")
+Wiki.df[,"wiki_type"]<- NA 
+Wiki.df[,"wiki_link"]<-NA
+
+#Adding each type and link to each list
+#Northern ireland link
+Wiki.df$wiki_link[(Wiki.df$wiki_district%in%NI_districts)]<-Wiki_links[[1]]
+Wiki.df$wiki_type[(Wiki.df$wiki_district%in%NI_districts)]<-"districts"
+#Wales link
+Wiki.df$wiki_link[(Wiki.df$wiki_district%in%W_districts)]<-Wiki_links[[2]]
+Wiki.df$wiki_type[(Wiki.df$wiki_district%in%W_districts)]<-"principle_area"
+#Scotland link
+Wiki.df$wiki_link[(Wiki.df$wiki_district%in%S_districts)]<-Wiki_links[[3]]
+Wiki.df$wiki_type[(Wiki.df$wiki_district%in%S_districts)]<-"council_areas"
+#E1 link
+Wiki.df$wiki_link[(Wiki.df$wiki_district%in%E1_districts)]<-Wiki_links[[4]]
+Wiki.df$wiki_type[(Wiki.df$wiki_district%in%E1_districts)]<-"unitary_authority"
+#E2 link
+Wiki.df$wiki_link[(Wiki.df$wiki_district%in%E2_districts)]<-Wiki_links[[5]]
+Wiki.df$wiki_type[(Wiki.df$wiki_district%in%E2_districts)]<-"non_metropoliton_counties"
+#E3 link
+Wiki.df$wiki_link[(Wiki.df$wiki_district%in%E3_districts)]<-Wiki_links[[6]]
+Wiki.df$wiki_type[(Wiki.df$wiki_district%in%E3_districts)]<-"metropoliton_counties"
