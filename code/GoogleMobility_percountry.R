@@ -1,7 +1,7 @@
 # Start -------------------------------------------------------------------
 rm(list=ls())
 set.seed(1234)
-setwd("~/GitHub/parksinthepandemic/code")
+setwd("GitHub/parksinthepandemic/code")
 
 # Load packages ----------------------------------------------------------
 #install.packages('plotrix')
