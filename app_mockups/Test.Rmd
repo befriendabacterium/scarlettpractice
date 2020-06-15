@@ -1,0 +1,97 @@
+---
+title: "The Pandemic, People and the Environment"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+    runtime: shiny
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(leaflet)
+library(tidyverse)
+library(rmarkdown)
+```
+
+assignInNamespace("clean_tmpfiles", clean_tmpfiles_mod, ns = "rmarkdown")
+
+Inputs {.sidebar data-width=200}
+-------------------------------------
+
+```{r}
+shiny::dateRangeInput("daterange1", "Date range:",
+                 start = "2020-01-01",
+                 end   = "2020-08-31")
+
+```
+ 
+Column
+-------------------------------------
+    
+### Covid Cases
+    
+```{r}
+leaflet() %>% 
+  addTiles() %>% 
+  setView( lng=-1.0410, lat=54.5817, zoom = 4 )
+```
+
+Column
+-------------------------------------
+        
+### Park Mobility
+
+```{r}
+leaflet() %>% 
+  addTiles() %>% 
+  setView( lng=-1.0410, lat=54.5817, zoom = 5 )
+```
+
+Column
+-------------------------------------
+    
+### Weather
+    
+```{r}
+leaflet() %>% 
+  addTiles() %>% 
+  setView( lng=-1.0410, lat=54.5817, zoom = 6 )
+```
+
+Column
+-------------------------------------
+
+### A plot
+    
+```{r}
+# create data
+xValue1 <- 1:10
+xValue2<- 5:14
+yValue <- c(rpois(5,10),rpois(5,15))
+data <- data.frame(xValue1, xValue2,yValue)
+data<-data %>% 
+  gather(key=key, value=value, -yValue)
+
+# Plot
+data %>% 
+ggplot(aes(x=value, y=yValue, colour=key)) +
+  geom_line(size=1)+
+  theme_minimal()
+
+```
+    
+### Webscraped text
+
+```{r}
+library(rvest)
+
+url="https://en.wikipedia.org/wiki/Timeline_of_the_COVID-19_pandemic_in_the_United_Kingdom"
+sample = url %>%
+
+  read_html() %>%
+  html_node("h1") %>% 
+  html_text()
+print(sample)
+
+```
