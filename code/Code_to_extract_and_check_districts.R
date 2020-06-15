@@ -27,7 +27,7 @@ library(tibble)
 library(tidyr)
 
 # Code to download list file of districts ---------------------------------
-Districts_by_country<-readRDS("Districts_by_country.RDS")
+Districts_by_country<-readRDS("inputdata/Districts_by_country.RDS")
 #Creating a list of all the wikipedia links required
 Wiki_links<-list("https://en.wikipedia.org/wiki/Local_government_in_Northern_Ireland#Local_Government_Districts",
 "https://en.wikipedia.org/wiki/Local_government_in_Wales",
