@@ -1,6 +1,7 @@
 # START -------------------------------------------------------------------
 rm(list=ls())
 set.seed(1234)
+
 setwd('Github/parksinthepandemic/code/')
 
 # LOAD PACKAGES -----------------------------------------------------------
@@ -34,7 +35,8 @@ Wiki_links<-list("https://en.wikipedia.org/wiki/Local_government_in_Northern_Ire
 "https://en.wikipedia.org/wiki/Subdivisions_of_Scotland",
 "https://en.wikipedia.org/wiki/Unitary_authorities_of_England",
 "https://en.wikipedia.org/wiki/Non-metropolitan_district",
-"https://en.wikipedia.org/wiki/Metropolitan_borough"
+"https://en.wikipedia.org/wiki/Metropolitan_borough",
+"https://en.wikipedia.org/wiki/Subdivisions_of_England#Two-tier_non-metropolitan_counties_2"
 )
 
 
@@ -54,7 +56,7 @@ W.df<-data.frame(readHTMLTable(doc=content((GET(Wiki_links[[2]])),"text"))[2])
 #Extract the countries associated to the Wales districts then extract one box and obtain a string seperated out by n/ and then un list.
 W_districts<-strsplit(as.character(W.df[1,2]),'\n') %>% 
   unlist(recursive = T) 
-#Remove special charactersand bracketed information
+#Remove special characters and bracketed information
 W_districts<-str_trim(gsub("\\(.*?)|\\???|\\*","",W_districts))
 #Checks for match
 match(W_districts,Districts_by_country[[2]])
@@ -123,4 +125,7 @@ Wiki.df$wiki_type[(Wiki.df$wiki_district%in%E2_districts)]<-"non_metropoliton_co
 #E3 link
 Wiki.df$wiki_link[(Wiki.df$wiki_district%in%E3_districts)]<-Wiki_links[[6]]
 Wiki.df$wiki_type[(Wiki.df$wiki_district%in%E3_districts)]<-"metropoliton_counties"
+#London link
+Wiki.df$wiki_link[(Wiki.df$wiki_district%in%"Greater London")]<-Wiki_links[[7]]
+Wiki.df$wiki_type[(Wiki.df$wiki_district%in%"Greater London")]<-"region"
 
