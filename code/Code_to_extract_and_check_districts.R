@@ -1,7 +1,8 @@
 # START -------------------------------------------------------------------
 rm(list=ls())
 set.seed(1234)
-setwd("~/Github/parksinthepandemic/code")
+
+setwd('Github/parksinthepandemic/code/')
 
 # LOAD PACKAGES -----------------------------------------------------------
 
@@ -37,7 +38,6 @@ Wiki_links<-list("https://en.wikipedia.org/wiki/Local_government_in_Northern_Ire
 "https://en.wikipedia.org/wiki/Metropolitan_borough",
 "https://en.wikipedia.org/wiki/Subdivisions_of_England#Two-tier_non-metropolitan_counties_2"
 )
-
 
 
 # Checking the districts match up in N_Ireland -----------------------------------------
