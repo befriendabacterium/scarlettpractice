@@ -29,7 +29,7 @@ ui <- dashboardPage(
   dashboardSidebar(out=h3("Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 ")),
   
-  dashboardBody(
+  dashboardBody(tags$head(tags$style(HTML('.box {margin: 0px;}'))),
     
     tabsetPanel(
       
@@ -42,12 +42,12 @@ ui <- dashboardPage(
         value = "page1",
         
         fluidRow(
-          #box(leafletOutput("mymap1")))), # think we might need to drop leaflet as it is very slow
-          box(plotOutput("map1")),
-          box(plotOutput("map2")),
-          box(plotOutput("map3"))
-          )),
-        
+          column(10, tabsetPanel(type = "tabs",
+                                        tabPanel(" ",
+                                                 column(width = 4,plotOutput("map1")),
+                                                 column(width = 4, plotOutput("map2")),
+                                                 column(width = 4,plotOutput("map3"))
+                                        ))))),
         tabPanel(
           title="Model",
           value="page2",
