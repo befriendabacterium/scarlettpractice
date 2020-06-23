@@ -65,21 +65,33 @@ Park_UK_SE$Date<-as.Date(Park_UK_SE$Date)
 
 # Plots for the whole of time series avalible to us -------------------------------------------------------------------
 #Creates the graph referring to England districts. 
+
+
+barplot(Park_UK_mean$England~seq(0.5,120.5,1))
+
 ENG_graph<-
-  ggplot(data=Park_UK_mean,aes(x=Date,y=England))+
-  geom_line()+
-  geom_ribbon(aes(ymin=England-Park_UK_SE$England,
-                  ymax=England+Park_UK_SE$England),alpha=0.4)+
-  coord_cartesian(ylim=c(-60,160))+
-  geom_hline(yintercept=0)+ 
+  ggplot(data=Park_UK_mean,aes(x=Date,y=England, group=Date)) +
+
+  geom_col(position = position_dodge(width=0.2)) +
+  
+  geom_errorbar(aes(ymin=England-Park_UK_SE$England,
+                    ymax=England+Park_UK_SE$England), 
+                    width=0, position = position_dodge(width=0.9)) +
+                  
+  coord_cartesian(ylim=c(-60,160)) +
+    
+  geom_hline(yintercept=0) + 
+    
   theme(panel.background = element_rect(fill = "white", colour = "black",
                                         size = 1, linetype = "solid"),
         panel.grid.major = element_line(size = 0.5, linetype = 'solid',
                                         colour = "grey"), 
         panel.grid.minor = element_line(size = 0.25, linetype = 'solid',
-                                        colour = "grey"))+
+                                        colour = "grey")) +
+    
   ggtitle("England")+xlab("Date")+ylab("Parks percentage change from baseline")
 
+ENG_graph
 
 #Creates the graph for the Wales districts
 WAL_graph<-
