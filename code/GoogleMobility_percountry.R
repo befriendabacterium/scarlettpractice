@@ -78,11 +78,11 @@ cbPalette_country <- c("#D55E00","#009E73","#0072B2","#F0E442")
 
 UK_graphs_colbycountry<-ggplot(data=Park_UK_mean_all,aes(x=Date,y=value, fill=Park_UK_mean_all$variable)) +
   
-  geom_col(position = position_dodge(width=0.2), colour='black') +
+  geom_col(position = position_dodge(width=0.2), colour='black', size=0.25) +
   
   geom_errorbar(aes(ymin=value-se,
                     ymax=value+se), 
-                width=0, position = position_dodge(width=0.9)) +
+                    width=0, size=0.25, position = position_dodge(width=0.9)) +
   
   coord_cartesian(ylim=c(-60,160)) +
   
@@ -106,6 +106,8 @@ UK_graphs_colbycountry<-ggplot(data=Park_UK_mean_all,aes(x=Date,y=value, fill=Pa
 
 UK_graphs_colbycountry
 
+ggsave(file="outputdata/wholeseries_colbycountry.pdf", width = 210, height = 297, units = "mm")
+
 
 # WHOLE SERIES COLOURED BY WEEKDAYS ---------------------------------------
 
@@ -115,11 +117,11 @@ cbPalette_weekday <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#
                      
 UK_graphs_colbyweekday<-ggplot(data=Park_UK_mean_all,aes(x=Date,y=value, fill=weekdays(Park_UK_mean_all$Date))) +
          
-         geom_col(position = position_dodge(width=0.2), colour='black') +
+         geom_col(position = position_dodge(width=0.2), colour='black', size=0.25) +
          
          geom_errorbar(aes(ymin=value-se,
                            ymax=value+se), 
-                           width=0, position = position_dodge(width=0.9)) +
+                           width=0, size=0.25, position = position_dodge(width=0.9)) +
          
          coord_cartesian(ylim=c(-60,160)) +
          
@@ -144,6 +146,8 @@ UK_graphs_colbyweekday<-ggplot(data=Park_UK_mean_all,aes(x=Date,y=value, fill=we
 
 UK_graphs_colbyweekday
 
+ggsave(file="outputdata/wholeseries_colbyweekday.pdf", width = 210, height = 297, units = "mm")
+
 # MAY SERIES: PLOT PREP -------------------------------------------------------------------
 
 Park_UK_mean_may<-Park_UK_mean[Park_UK_mean$Date >= "2020-05-01" & Park_UK_mean$Date <= "2020-05-31",]
@@ -164,11 +168,11 @@ cbPalette_country <- c("#D55E00","#009E73","#0072B2","#F0E442")
 
 UK_graphs_colbycountry_may<-ggplot(data=Park_UK_mean_may,aes(x=Date,y=value, fill=Park_UK_mean_may$variable)) +
   
-  geom_col(position = position_dodge(width=0.2), colour='black') +
+  geom_col(position = position_dodge(width=0.2), colour='black', size=0.25) +
   
   geom_errorbar(aes(ymin=value-se,
                     ymax=value+se), 
-                width=0, position = position_dodge(width=0.9)) +
+                width=0, size=0.25, position = position_dodge(width=0.9)) +
   
   coord_cartesian(ylim=c(-60,160)) +
   
@@ -192,6 +196,7 @@ UK_graphs_colbycountry_may<-ggplot(data=Park_UK_mean_may,aes(x=Date,y=value, fil
 
 UK_graphs_colbycountry_may
 
+ggsave(file="outputdata/mayseries_colbycountry.pdf", width = 210, height = 297, units = "mm")
 
 # MAY SERIES COLOURED BY WEEKDAYS ---------------------------------------
 
@@ -201,11 +206,11 @@ cbPalette_weekday <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#
 
 UK_graphs_colbyweekday_may<-ggplot(data=Park_UK_mean_may,aes(x=Date,y=value, fill=weekdays(Park_UK_mean_may$Date))) +
   
-  geom_col(position = position_dodge(width=0.2), colour='black') +
+  geom_col(position = position_dodge(width=0.2), colour='black', size=0.25) +
   
   geom_errorbar(aes(ymin=value-se,
                     ymax=value+se), 
-                width=0, position = position_dodge(width=0.9)) +
+                width=0, size=0.25, position = position_dodge(width=0.9)) +
   
   coord_cartesian(ylim=c(-60,160)) +
   
@@ -230,8 +235,8 @@ UK_graphs_colbyweekday_may<-ggplot(data=Park_UK_mean_may,aes(x=Date,y=value, fil
 
 UK_graphs_colbyweekday_may
 
+ggsave(file="outputdata/mayseries_colbyweekday.pdf", width = 210, height = 297, units = "mm")
 
 # WRITE GRAPHS TO PDFS ----------------------------------------------------
-
 
 
