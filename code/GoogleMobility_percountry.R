@@ -20,6 +20,8 @@ library(ggplot2)
 library(lattice)
 #install.packages("tidyr")
 library(tidyr)
+install.packages('reshape2')
+library(reshape2)
 
 # Load dataset ------------------------------------------------------------
 #Loads Global Mobility report from the designated work directory
@@ -163,6 +165,42 @@ NI_graph<-
 #This plots all the graphs onto one image.
 grid.arrange(ENG_graph,WAL_graph,SCOT_graph,NI_graph, nrow = 2)
 
+#better panel plot
+
+library(reshape2)
+Park_UK_mean_all<-melt(Park_UK_mean,'Date')
+Park_UK_mean_all<-cbind(Park_UK_mean_all,se=melt(Park_UK_SE,'Date')[,3])
+Park_UK_mean_all<-cbind(Park_UK_mean_all,graphcolour=c(rep("#D55E00",nrow(Park_UK_mean_all)/4),
+                                                     rep("#009E73",nrow(Park_UK_mean_all)/4),
+                                                     rep("#0072B2",nrow(Park_UK_mean_all)/4),
+                                                     rep("#F0E442",nrow(Park_UK_mean_all)/4)))
+                        
+levels(Park_UK_mean_all$variable)[2]<-'Northern Ireland'
+
+UK_graphs<-ggplot(data=Park_UK_mean_all,aes(x=Date,y=value)) +
+         
+         geom_col(position = position_dodge(width=0.2), fill=Park_UK_mean_all$graphcolour, colour='black') +
+         
+         geom_errorbar(aes(ymin=value-se,
+                           ymax=value+se), 
+                           width=0, position = position_dodge(width=0.9)) +
+         
+         coord_cartesian(ylim=c(-60,160)) +
+         
+         geom_hline(yintercept=0) + 
+         
+         theme(panel.background = element_rect(fill = "white", colour = "black", size = 1, linetype = "solid"),
+               panel.grid.major = element_line(size = 0.5, linetype = 'solid', colour = "grey"), 
+               panel.grid.minor = element_line(size = 0.25, linetype = 'solid',colour = "grey"),
+               strip.background = element_blank(),
+               strip.text.y = element_text(size=15, angle=0)) +
+  
+          facet_wrap(~variable, nrow=4, strip.position='right') +
+  
+          xlab("Date") +
+          ylab("Parks percentage change from baseline")
+
+UK_graphs
 
 # Extract the mean and SE values for only May ------------------------------------------------------------
 Park_UK_mean_may<-Park_UK_mean[Park_UK_mean$Date >= "2020-05-01" & Park_UK_mean$Date <= "2020-05-31",]
@@ -243,12 +281,12 @@ SCOT_graph_may<-
 
 #Creates a graph for Northern Irelands' district
 NI_graph_may<-
-  ggplot(data=Park_UK_mean_may,aes(x=Date,y=Scotland, group=Date)) +
+  ggplot(data=Park_UK_mean_may,aes(x=Date,y=N_Ireland, group=Date)) +
   
   geom_col(position = position_dodge(width=0.2)) +
   
-  geom_errorbar(aes(ymin=Scotland-Park_UK_SE_may$Scotland,
-                    ymax=Scotland+Park_UK_SE_may$Scotland), 
+  geom_errorbar(aes(ymin=N_Ireland-Park_UK_SE_may$N_Ireland,
+                    ymax=N_Ireland+Park_UK_SE_may$N_Ireland), 
                 width=0, position = position_dodge(width=0.9)) +
   
   coord_cartesian(ylim=c(-60,160)) +
@@ -266,5 +304,43 @@ NI_graph_may<-
 
 
 #This plots all the graphs onto one image.
-grid.arrange(ENG_graph_may,WAL_graph_may,SCOT_graph_may,NI_graph_may, nrow = 2)
+grid.arrange(ENG_graph_may,WAL_graph_may,SCOT_graph_may,NI_graph_may, nrow = 4)
 
+
+#better panel plot
+
+Park_UK_mean_all_may<-melt(Park_UK_mean_may,'Date')
+Park_UK_mean_all_may<-cbind(Park_UK_mean_all_may,se=melt(Park_UK_SE_may,'Date')[,3])
+Park_UK_mean_all_may<-cbind(Park_UK_mean_all_may,graphcolour=c(rep("#D55E00",nrow(Park_UK_mean_all_may)/4),
+                                                       rep("#009E73",nrow(Park_UK_mean_all_may)/4),
+                                                       rep("#0072B2",nrow(Park_UK_mean_all_may)/4),
+                                                       rep("#F0E442",nrow(Park_UK_mean_all_may)/4)))
+
+levels(Park_UK_mean_all_may$variable)[2]<-'Northern Ireland'
+
+UK_graphs<-ggplot(data=Park_UK_mean_all_may,aes(x=Date,y=value)) +
+  
+  geom_col(position = position_dodge(width=0.2), fill=Park_UK_mean_all_may$graphcolour, colour='black') +
+  
+  geom_errorbar(aes(ymin=value-se,
+                    ymax=value+se), 
+                width=0, position = position_dodge(width=0.9)) +
+  
+  coord_cartesian(ylim=c(-60,160)) +
+  
+  geom_hline(yintercept=0) + 
+  
+  theme(panel.background = element_rect(fill = "white", colour = "black", size = 1, linetype = "solid"),
+        panel.grid.major = element_line(size = 0.5, linetype = 'solid', colour = "grey"), 
+        panel.grid.minor = element_line(size = 0.25, linetype = 'solid',colour = "grey"),
+        strip.background = element_blank(),
+        strip.text.y = element_text(size=15, angle=0)) +
+  
+  facet_wrap(~variable, nrow=4, strip.position='right') +
+  
+  xlab("Date") +
+  ylab("Parks percentage change from baseline")
+
+UK_graphs
+
+       
