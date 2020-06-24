@@ -20,7 +20,7 @@ library(ggplot2)
 library(lattice)
 #install.packages("tidyr")
 library(tidyr)
-install.packages('reshape2')
+#install.packages('reshape2')
 library(reshape2)
 
 # Load dataset ------------------------------------------------------------
@@ -48,7 +48,7 @@ UK$sub_country[(UK$sub_region_1%in%Districts_by_country[[2]])]<-"Wales"
 #Scotland
 UK$sub_country[(UK$sub_region_1%in%Districts_by_country[[3]])]<-"Scotland"
 #Northern Ireland
-UK$sub_country[(UK$sub_region_1%in%Districts_by_country[[4]])]<-"N_Ireland"
+UK$sub_country[(UK$sub_region_1%in%Districts_by_country[[4]])]<-"Northern Ireland"
 
 # Calculating UK mean and SE for each country division of the UK ----------
 #Calculates the average mean across the districts for each time point.
@@ -65,125 +65,63 @@ Park_UK_SE<-rownames_to_column(Park_UK_SE,var="Date")
 #Ensure the Date variables is the date class present in R.
 Park_UK_SE$Date<-as.Date(Park_UK_SE$Date)
 
-# Plots for the whole of time series avalible to us -------------------------------------------------------------------
-#Creates the graph referring to England districts. 
+# wHOLE SERIES: PLOT PREP -------------------------------------------------------------------
 
-ENG_graph<-
-  ggplot(data=Park_UK_mean,aes(x=Date,y=England, group=Date)) +
-
-  geom_col(position = position_dodge(width=0.2)) +
-  
-  geom_errorbar(aes(ymin=England-Park_UK_SE$England,
-                    ymax=England+Park_UK_SE$England), 
-                    width=0, position = position_dodge(width=0.9)) +
-                  
-  coord_cartesian(ylim=c(-60,160)) +
-    
-  geom_hline(yintercept=0) + 
-    
-  theme(panel.background = element_rect(fill = "white", colour = "black",
-                                        size = 1, linetype = "solid"),
-        panel.grid.major = element_line(size = 0.5, linetype = 'solid',
-                                        colour = "grey"), 
-        panel.grid.minor = element_line(size = 0.25, linetype = 'solid',
-                                        colour = "grey")) +
-    
-  ggtitle("England")+xlab("Date")+ylab("Parks percentage change from baseline")
-
-
-#Creates the graph for the Wales districts
-WAL_graph<-
-  ggplot(data=Park_UK_mean,aes(x=Date,y=Wales, group=Date)) +
-  
-  geom_col(position = position_dodge(width=0.2)) +
-  
-  geom_errorbar(aes(ymin=Wales-Park_UK_SE$Wales,
-                    ymax=Wales+Park_UK_SE$Wales), 
-                width=0, position = position_dodge(width=0.9)) +
-  
-  coord_cartesian(ylim=c(-60,160)) +
-  
-  geom_hline(yintercept=0) + 
-  
-  theme(panel.background = element_rect(fill = "white", colour = "black",
-                                        size = 1, linetype = "solid"),
-        panel.grid.major = element_line(size = 0.5, linetype = 'solid',
-                                        colour = "grey"), 
-        panel.grid.minor = element_line(size = 0.25, linetype = 'solid',
-                                        colour = "grey")) +
-  
-  ggtitle("Wales")+xlab("Date")+ylab("Parks percentage change from baseline")
-
-#Creates a graph for Scotland' district
-SCOT_graph<-
-  ggplot(data=Park_UK_mean,aes(x=Date,y=Scotland, group=Date)) +
-  
-  geom_col(position = position_dodge(width=0.2)) +
-  
-  geom_errorbar(aes(ymin=Scotland-Park_UK_SE$Scotland,
-                    ymax=Scotland+Park_UK_SE$Scotland), 
-                width=0, position = position_dodge(width=0.9)) +
-  
-  coord_cartesian(ylim=c(-60,160)) +
-  
-  geom_hline(yintercept=0) + 
-  
-  theme(panel.background = element_rect(fill = "white", colour = "black",
-                                        size = 1, linetype = "solid"),
-        panel.grid.major = element_line(size = 0.5, linetype = 'solid',
-                                        colour = "grey"), 
-        panel.grid.minor = element_line(size = 0.25, linetype = 'solid',
-                                        colour = "grey")) +
-  
-  ggtitle("Scotland")+xlab("Date")+ylab("Parks percentage change from baseline")
-
-
-#Creates a graph for Northern Irelands' district
-NI_graph<-
-  ggplot(data=Park_UK_mean,aes(x=Date,y=Scotland, group=Date)) +
-  
-  geom_col(position = position_dodge(width=0.2)) +
-  
-  geom_errorbar(aes(ymin=Scotland-Park_UK_SE$Scotland,
-                    ymax=Scotland+Park_UK_SE$Scotland), 
-                width=0, position = position_dodge(width=0.9)) +
-  
-  coord_cartesian(ylim=c(-60,160)) +
-  
-  geom_hline(yintercept=0) + 
-  
-  theme(panel.background = element_rect(fill = "white", colour = "black",
-                                        size = 1, linetype = "solid"),
-        panel.grid.major = element_line(size = 0.5, linetype = 'solid',
-                                        colour = "grey"), 
-        panel.grid.minor = element_line(size = 0.25, linetype = 'solid',
-                                        colour = "grey")) +
-  
-  ggtitle("NI")+xlab("Date")+ylab("Parks percentage change from baseline")
-
-
-#This plots all the graphs onto one image.
-grid.arrange(ENG_graph,WAL_graph,SCOT_graph,NI_graph, nrow = 2)
-
-#better panel plot
-
-library(reshape2)
+#transform the dataframe so all countries are in one column
 Park_UK_mean_all<-melt(Park_UK_mean,'Date')
+#append the standard error column to it
 Park_UK_mean_all<-cbind(Park_UK_mean_all,se=melt(Park_UK_SE,'Date')[,3])
-Park_UK_mean_all<-cbind(Park_UK_mean_all,graphcolour=c(rep("#D55E00",nrow(Park_UK_mean_all)/4),
-                                                     rep("#009E73",nrow(Park_UK_mean_all)/4),
-                                                     rep("#0072B2",nrow(Park_UK_mean_all)/4),
-                                                     rep("#F0E442",nrow(Park_UK_mean_all)/4)))
-                        
-levels(Park_UK_mean_all$variable)[2]<-'Northern Ireland'
+#make colourblind pallette for country
+cbPalette_country <- c("#D55E00","#009E73","#0072B2","#F0E442")
 
-UK_graphs<-ggplot(data=Park_UK_mean_all,aes(x=Date,y=value)) +
+# WHOLE SERIES COLOURED BY COUNTRY ---------------------------------------
+
+UK_graphs_colbycountry<-ggplot(data=Park_UK_mean_all,aes(x=Date,y=value, fill=Park_UK_mean_all$variable)) +
+  
+  geom_col(position = position_dodge(width=0.2), colour='black', size=0.25) +
+  
+  geom_errorbar(aes(ymin=value-se,
+                    ymax=value+se), 
+                    width=0, size=0.25, position = position_dodge(width=0.9)) +
+  
+  coord_cartesian(ylim=c(-60,160)) +
+  
+  geom_hline(yintercept=0) + 
+  
+  theme(panel.background = element_rect(fill = "white", colour = "black", size = 1, linetype = "solid"),
+        panel.grid.major = element_line(size = 0.5, linetype = 'solid', colour = "grey"), 
+        panel.grid.minor = element_line(size = 0.25, linetype = 'solid',colour = "grey"),
+        strip.background = element_blank(),
+        strip.text = element_blank()) +
+  
+  scale_fill_manual(name = "Country", values=cbPalette_country , 
+                    breaks=c('England','Northern Ireland','Scotland','Wales'),
+                    labels=c('England','Northern Ireland','Scotland','Wales'))+
+  
+  
+  facet_wrap(~variable, nrow=4, strip.position='top') +
+  
+  xlab("Date") +
+  ylab("Parks percentage change from baseline")
+
+UK_graphs_colbycountry
+
+ggsave(file="outputdata/wholeseries_colbycountry.pdf", width = 210, height = 297, units = "mm")
+
+
+# WHOLE SERIES COLOURED BY WEEKDAYS ---------------------------------------
+
+#make colourblind pallette for weekdays
+cbPalette_weekday <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+
+                     
+UK_graphs_colbyweekday<-ggplot(data=Park_UK_mean_all,aes(x=Date,y=value, fill=weekdays(Park_UK_mean_all$Date))) +
          
-         geom_col(position = position_dodge(width=0.2), fill=Park_UK_mean_all$graphcolour, colour='black') +
+         geom_col(position = position_dodge(width=0.2), colour='black', size=0.25) +
          
          geom_errorbar(aes(ymin=value-se,
                            ymax=value+se), 
-                           width=0, position = position_dodge(width=0.9)) +
+                           width=0, size=0.25, position = position_dodge(width=0.9)) +
          
          coord_cartesian(ylim=c(-60,160)) +
          
@@ -195,136 +133,84 @@ UK_graphs<-ggplot(data=Park_UK_mean_all,aes(x=Date,y=value)) +
                strip.background = element_blank(),
                strip.text.y = element_text(size=15, angle=0)) +
   
-          facet_wrap(~variable, nrow=4, strip.position='right') +
+          scale_fill_manual(name = "Weekday", values=cbPalette_weekday[c(2,6,7,5,1,3,4)], 
+                    breaks=c('Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'),
+                    labels=c('Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'))+
+  
+  
+  
+          facet_wrap(~variable, nrow=4, strip.position='top') +
   
           xlab("Date") +
           ylab("Parks percentage change from baseline")
 
-UK_graphs
+UK_graphs_colbyweekday
 
-# Extract the mean and SE values for only May ------------------------------------------------------------
+ggsave(file="outputdata/wholeseries_colbyweekday.pdf", width = 210, height = 297, units = "mm")
+
+# MAY SERIES: PLOT PREP -------------------------------------------------------------------
+
 Park_UK_mean_may<-Park_UK_mean[Park_UK_mean$Date >= "2020-05-01" & Park_UK_mean$Date <= "2020-05-31",]
 Park_UK_SE_may<-Park_UK_SE[Park_UK_SE$Date >= "2020-05-01" & Park_UK_SE$Date <= "2020-05-31",]
 
+#transform the dataframe so all countries are in one column
+Park_UK_mean_may<-melt(Park_UK_mean_may,'Date')
+#append the standard error column to it
+Park_UK_mean_may<-cbind(Park_UK_mean_may,se=melt(Park_UK_SE_may,'Date')[,3])
+#make colourblind pallette for country
+cbPalette_country <- c("#D55E00","#009E73","#0072B2","#F0E442")
+
+
 # May Plots -------------------------------------------------------------------
-#Creates a graph for Englands' districts.
+#Creates graphs for May data only
 
-ENG_graph_may<-
-  ggplot(data=Park_UK_mean_may,aes(x=Date,y=England, group=Date)) +
-  
-  geom_col(position = position_dodge(width=0.2)) +
-  
-  geom_errorbar(aes(ymin=England-Park_UK_SE_may$England,
-                    ymax=England+Park_UK_SE_may$England), 
-                width=0, position = position_dodge(width=0.9)) +
-  
-  coord_cartesian(ylim=c(-60,160)) +
-  
-  geom_hline(yintercept=0) + 
-  
-  theme(panel.background = element_rect(fill = "white", colour = "black",
-                                        size = 1, linetype = "solid"),
-        panel.grid.major = element_line(size = 0.5, linetype = 'solid',
-                                        colour = "grey"), 
-        panel.grid.minor = element_line(size = 0.25, linetype = 'solid',
-                                        colour = "grey")) +
-  
-  ggtitle("England")+xlab("Date")+ylab("Parks percentage change from baseline")
+# MAY SERIES COLOURED BY COUNTRY ---------------------------------------
 
-
-#Creates the graph for the Wales districts
-WAL_graph_may<-
-  ggplot(data=Park_UK_mean_may,aes(x=Date,y=Wales, group=Date)) +
+UK_graphs_colbycountry_may<-ggplot(data=Park_UK_mean_may,aes(x=Date,y=value, fill=Park_UK_mean_may$variable)) +
   
-  geom_col(position = position_dodge(width=0.2)) +
-  
-  geom_errorbar(aes(ymin=Wales-Park_UK_SE_may$Wales,
-                    ymax=Wales+Park_UK_SE_may$Wales), 
-                width=0, position = position_dodge(width=0.9)) +
-  
-  coord_cartesian(ylim=c(-60,160)) +
-  
-  geom_hline(yintercept=0) + 
-  
-  theme(panel.background = element_rect(fill = "white", colour = "black",
-                                        size = 1, linetype = "solid"),
-        panel.grid.major = element_line(size = 0.5, linetype = 'solid',
-                                        colour = "grey"), 
-        panel.grid.minor = element_line(size = 0.25, linetype = 'solid',
-                                        colour = "grey")) +
-  
-  ggtitle("Wales")+xlab("Date")+ylab("Parks percentage change from baseline")
-
-#Creates a graph for Scotland' district
-SCOT_graph_may<-
-  ggplot(data=Park_UK_mean_may,aes(x=Date,y=Scotland, group=Date)) +
-  
-  geom_col(position = position_dodge(width=0.2)) +
-  
-  geom_errorbar(aes(ymin=Scotland-Park_UK_SE_may$Scotland,
-                    ymax=Scotland+Park_UK_SE_may$Scotland), 
-                width=0, position = position_dodge(width=0.9)) +
-  
-  coord_cartesian(ylim=c(-60,160)) +
-  
-  geom_hline(yintercept=0) + 
-  
-  theme(panel.background = element_rect(fill = "white", colour = "black",
-                                        size = 1, linetype = "solid"),
-        panel.grid.major = element_line(size = 0.5, linetype = 'solid',
-                                        colour = "grey"), 
-        panel.grid.minor = element_line(size = 0.25, linetype = 'solid',
-                                        colour = "grey")) +
-  
-  ggtitle("Scotland")+xlab("Date")+ylab("Parks percentage change from baseline")
-
-
-#Creates a graph for Northern Irelands' district
-NI_graph_may<-
-  ggplot(data=Park_UK_mean_may,aes(x=Date,y=N_Ireland, group=Date)) +
-  
-  geom_col(position = position_dodge(width=0.2)) +
-  
-  geom_errorbar(aes(ymin=N_Ireland-Park_UK_SE_may$N_Ireland,
-                    ymax=N_Ireland+Park_UK_SE_may$N_Ireland), 
-                width=0, position = position_dodge(width=0.9)) +
-  
-  coord_cartesian(ylim=c(-60,160)) +
-  
-  geom_hline(yintercept=0) + 
-  
-  theme(panel.background = element_rect(fill = "white", colour = "black",
-                                        size = 1, linetype = "solid"),
-        panel.grid.major = element_line(size = 0.5, linetype = 'solid',
-                                        colour = "grey"), 
-        panel.grid.minor = element_line(size = 0.25, linetype = 'solid',
-                                        colour = "grey")) +
-  
-  ggtitle("NI")+xlab("Date")+ylab("Parks percentage change from baseline")
-
-
-#This plots all the graphs onto one image.
-grid.arrange(ENG_graph_may,WAL_graph_may,SCOT_graph_may,NI_graph_may, nrow = 4)
-
-
-#better panel plot
-
-Park_UK_mean_all_may<-melt(Park_UK_mean_may,'Date')
-Park_UK_mean_all_may<-cbind(Park_UK_mean_all_may,se=melt(Park_UK_SE_may,'Date')[,3])
-Park_UK_mean_all_may<-cbind(Park_UK_mean_all_may,graphcolour=c(rep("#D55E00",nrow(Park_UK_mean_all_may)/4),
-                                                       rep("#009E73",nrow(Park_UK_mean_all_may)/4),
-                                                       rep("#0072B2",nrow(Park_UK_mean_all_may)/4),
-                                                       rep("#F0E442",nrow(Park_UK_mean_all_may)/4)))
-
-levels(Park_UK_mean_all_may$variable)[2]<-'Northern Ireland'
-
-UK_graphs<-ggplot(data=Park_UK_mean_all_may,aes(x=Date,y=value)) +
-  
-  geom_col(position = position_dodge(width=0.2), fill=Park_UK_mean_all_may$graphcolour, colour='black') +
+  geom_col(position = position_dodge(width=0.2), colour='black', size=0.25) +
   
   geom_errorbar(aes(ymin=value-se,
                     ymax=value+se), 
-                width=0, position = position_dodge(width=0.9)) +
+                width=0, size=0.25, position = position_dodge(width=0.9)) +
+  
+  coord_cartesian(ylim=c(-60,160)) +
+  
+  geom_hline(yintercept=0) + 
+  
+  theme(panel.background = element_rect(fill = "white", colour = "black", size = 1, linetype = "solid"),
+        panel.grid.major = element_line(size = 0.5, linetype = 'solid', colour = "grey"), 
+        panel.grid.minor = element_line(size = 0.25, linetype = 'solid',colour = "grey"),
+        strip.background = element_blank(),
+        strip.text = element_blank()) +
+  
+  scale_fill_manual(name = "Country", values=cbPalette_country , 
+                    breaks=c('England','Northern Ireland','Scotland','Wales'),
+                    labels=c('England','Northern Ireland','Scotland','Wales'))+
+  
+  
+  facet_wrap(~variable, nrow=4, strip.position='top') +
+  
+  xlab("Date") +
+  ylab("Parks percentage change from baseline")
+
+UK_graphs_colbycountry_may
+
+ggsave(file="outputdata/mayseries_colbycountry.pdf", width = 210, height = 297, units = "mm")
+
+# MAY SERIES COLOURED BY WEEKDAYS ---------------------------------------
+
+#make colourblind pallette for weekdays
+cbPalette_weekday <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+
+
+UK_graphs_colbyweekday_may<-ggplot(data=Park_UK_mean_may,aes(x=Date,y=value, fill=weekdays(Park_UK_mean_may$Date))) +
+  
+  geom_col(position = position_dodge(width=0.2), colour='black', size=0.25) +
+  
+  geom_errorbar(aes(ymin=value-se,
+                    ymax=value+se), 
+                width=0, size=0.25, position = position_dodge(width=0.9)) +
   
   coord_cartesian(ylim=c(-60,160)) +
   
@@ -336,11 +222,17 @@ UK_graphs<-ggplot(data=Park_UK_mean_all_may,aes(x=Date,y=value)) +
         strip.background = element_blank(),
         strip.text.y = element_text(size=15, angle=0)) +
   
-  facet_wrap(~variable, nrow=4, strip.position='right') +
+  scale_fill_manual(name = "Weekday", values=cbPalette_weekday[c(2,6,7,5,1,3,4)], 
+                    breaks=c('Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'),
+                    labels=c('Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'))+
+  
+  
+  
+  facet_wrap(~variable, nrow=4, strip.position='top') +
   
   xlab("Date") +
   ylab("Parks percentage change from baseline")
 
-UK_graphs
+UK_graphs_colbyweekday_may
 
-       
+ggsave(file="outputdata/mayseries_colbyweekday.pdf", width = 210, height = 297, units = "mm")
