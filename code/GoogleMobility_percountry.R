@@ -236,7 +236,3 @@ UK_graphs_colbyweekday_may<-ggplot(data=Park_UK_mean_may,aes(x=Date,y=value, fil
 UK_graphs_colbyweekday_may
 
 ggsave(file="outputdata/mayseries_colbyweekday.pdf", width = 210, height = 297, units = "mm")
-
-# WRITE GRAPHS TO PDFS ----------------------------------------------------
-
-
