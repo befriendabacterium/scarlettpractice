@@ -20,6 +20,11 @@ library(ggplot2)
 library(lattice)
 #install.packages("tidyr")
 library(tidyr)
+<<<<<<< Updated upstream
+=======
+#install.packages('reshape2')
+library(reshape2)
+>>>>>>> Stashed changes
 
 # Load dataset ------------------------------------------------------------
 #Loads Global Mobility report from the designated work directory
