@@ -15,7 +15,7 @@ cd Documents\
 Now you can clone the project to this location with the `clone` command: 
 
 ```bash
-git clone https://github.com/AnnaPhD/parksinthepandemic.git
+git clone https://github.com/befriendabacterium/parksinthepandemic.git
 ```
 
 ## Branches
