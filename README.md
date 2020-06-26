@@ -46,7 +46,7 @@ You should only merge your feature branches into the `develop` branch.
 
 A git workflow is the plan used to describe how a project team will use git. This is the work flow I suggest. 
 
-![](https://github.com/AnnaPhD/parksinthepandemic/tree/master/docs/figures/GitWorlflow.png)
+![gitworkflow](https://github.com/AnnaPhD/parksinthepandemic/tree/master/docs/figures/gitworkflow.png  "gitworkflow")
 
 #### Initiate a new branch
 
