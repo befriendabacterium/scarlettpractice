@@ -30,9 +30,13 @@ library(ggplot2)
 
 
 # start -------------------------------------------------------------------
+#load Met Office data for May
 metdata_may<-read.csv('inputdata/UKcovidreportingregions_metoffice_global_daily_bbox_20200501-20200531.csv')
+#load Met Office data for Jan st-April 19th
 metdata_early<-read.csv('inputdata/UKcovidreportingregions_metoffice_global_daily_bbox_20200101-20200419.csv')
+#make a vector of dates within Google's Basline period
 baselinerange<-seq(as.Date('2020-01-02'),as.Date('2020-02-06'),1)
+#G
 metdata_baseline<-metdata_early[as.Date(metdata_early$date)%in%baselinerange,]
 
 googledata<-read.csv('inputdata/Global_Mobility_Report.csv')
